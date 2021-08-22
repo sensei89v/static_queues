@@ -8,7 +8,14 @@
 int main() {
     std::string command;
     std::vector<Queue*> queue_list;
-
+    std::cout << "Available commands:\n"
+                 "q - create a queue. We will store 'Queue object' in vector. All '<queue number>' corresponds to  position in the vector, not in the internal storage.\n"
+                 "f <queue number> - destroy the queue.\n"
+                 "a <queue number> <byte> - append a byte to the queue.\n"
+                 "aa <queue number> <count bytes> <start byte> - append an increasing sequence of bytes to a queue starting with 'start byte'.\n"
+                 "d <queue number> - extract a byte from the queue.\n"
+                 "dd <queue number> <count> - extract a sequence of bytes.\n"
+                 "e - exit.\n";
     while (1)
     {
         std::cin >> command;
@@ -26,7 +33,17 @@ int main() {
         {
             std::string snum;
             std::cin >> snum;
-            unsigned int num = std::stoi(snum);
+            unsigned int num;
+
+            try
+            {
+                num = std::stoi(snum);
+            }
+            catch (...)
+            {
+                std::cout << "Invalid number\n";
+                continue;
+            }
 
             if (num >= queue_list.size())
             {
@@ -41,10 +58,19 @@ int main() {
         else if (command == "a")
         {
             std::string snum, value;
+            unsigned int num;
             std::cin >> snum;
             std::cin >> value;
 
-            unsigned int num = std::stoi(snum);
+            try
+            {
+                num = std::stoi(snum);
+            }
+            catch (...)
+            {
+                std::cout << "Invalid number\n";
+                continue;
+            }
 
             if (num >= queue_list.size())
                 std::cout << "Invalid queue number\n";
@@ -57,10 +83,19 @@ int main() {
             std::cin >> snum;
             std::cin >> scount;
             std::cin >> sstart;
+            unsigned int num, count, start;
 
-            unsigned int num = std::stoi(snum);
-            unsigned int count = std::stoi(scount);
-            unsigned int start = std::stoi(sstart);
+            try
+            {
+                num = std::stoi(snum);
+                count = std::stoi(scount);
+                start = std::stoi(sstart);
+            }
+            catch (...)
+            {
+                std::cout << "Invalid number\n";
+                continue;
+            }
 
             if (num >= queue_list.size())
             {
@@ -77,9 +112,19 @@ int main() {
         }
         else if (command == "d")
         {
-            std::string tnum;
-            std::cin >> tnum;
-            unsigned int num = std::stoi(tnum);
+            std::string snum;
+            std::cin >> snum;
+            unsigned int num;
+
+            try
+            {
+                num = std::stoi(snum);
+            }
+            catch (...)
+            {
+                std::cout << "Invalid number\n";
+                continue;
+            }
 
             if (num >= queue_list.size())
             {
@@ -96,9 +141,19 @@ int main() {
             std::string snum, scount;
             std::cin >> snum;
             std::cin >> scount;
+            unsigned int num, count;
 
-            unsigned int num = std::stoi(snum);
-            unsigned int count = std::stoi(scount);
+            try
+            {
+                num = std::stoi(snum);
+                count = std::stoi(scount);
+            }
+            catch (...)
+            {
+                std::cout << "Invalid number\n";
+                continue;
+            }
+
             if (num >= queue_list.size())
             {
                 std::cout << "Invalid queue number\n";
@@ -116,7 +171,7 @@ int main() {
         {
             return 0;
         }
-        else if (command == "pa")
+        else if (command == "pa")   // TODO: DELETE!!!!
         {
             std::string size, shift;
             std::cin >> shift;
