@@ -68,7 +68,7 @@ int main() {
             }
             else
             {
-                for (int i = 0; i < count; i++)
+                for (unsigned int i = 0; i < count; i++)
                 {
                     enqueue_byte(queue_list[num], start);
                     start++;
@@ -105,7 +105,7 @@ int main() {
             }
             else
             {
-                for (int i = 0; i < count; i++)
+                for (unsigned int i = 0; i < count; i++)
                 {
                     unsigned char c = dequeue_byte(queue_list[num]);
                     std::cout << int(c) << "\n";

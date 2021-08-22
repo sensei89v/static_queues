@@ -215,7 +215,6 @@ void enqueue_byte(Queue *q, unsigned char b) // Adds a new byte to a queue.
 
 unsigned char dequeue_byte(Queue *q) // Pops the next byte off the FIFO queue.
 {
-    TConuter* counter;
     Block* block;
     unsigned char result = 0;
 
