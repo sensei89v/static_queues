@@ -25,7 +25,7 @@ typedef struct {
 
 unsigned char data[BUFFER_SIZE];
 
-//------------------------------------------
+//---------Handlers---------------------------------
 void on_out_of_memory()
 {
     std::cout << "Out of memory\n";
@@ -43,7 +43,7 @@ TConuter* get_counter()
 
 Block* get_block(unsigned int num)
 {
-    if (num > MAX_BLOCK_COUNT)
+    if (num >= MAX_BLOCK_COUNT)
         return NULL;
 
     return (Block*)(data + SHIFT) + num;
@@ -53,7 +53,6 @@ unsigned int get_block_address(Block* block)
 {
     return block - ((Block*)(data + SHIFT));
 }
-
 
 void delete_block_from_queue(Queue* q, Block* block)
 {
@@ -71,7 +70,6 @@ void delete_block_from_queue(Queue* q, Block* block)
         next_block->prev = get_queue_address(q);
     }
 }
-
 
 void free_block(Block* block)
 {
@@ -119,7 +117,6 @@ void free_block(Block* block)
     bzero(last_block, sizeof(Block));
 }
 
-
 Queue *create_queue() // Creates a FIFO byte queue, returning a handle to it.
 {
     Queue* q = (Queue*)data;
@@ -137,15 +134,14 @@ Queue *create_queue() // Creates a FIFO byte queue, returning a handle to it.
         }
         q++;
     }
-    // TODO: think
+
     on_out_of_memory();
     return NULL;
 }
 
-
 void destroy_queue(Queue *q) // Destroy an earlier created byte queue.
 {
-    if (!q || !q->reserved) // TODO: another chechs
+    if (!q || !q->reserved) // TODO: additional checks
     {
         on_illegal_operation();
         return;
@@ -165,13 +161,12 @@ void destroy_queue(Queue *q) // Destroy an earlier created byte queue.
     q->write_counter = 0;
 }
 
-
 void enqueue_byte(Queue *q, unsigned char b) // Adds a new byte to a queue.
 {
     TConuter* counter;
     Block* block;
 
-    if (!q || !q->reserved) // TODO: another chechs
+    if (!q || !q->reserved) // TODO: additional checks
     {
         on_illegal_operation();
         return;
@@ -212,19 +207,19 @@ void enqueue_byte(Queue *q, unsigned char b) // Adds a new byte to a queue.
     q->write_counter = (q->write_counter + 1) % BLOCK_SIZE;
 }
 
-
 unsigned char dequeue_byte(Queue *q) // Pops the next byte off the FIFO queue.
 {
     Block* block;
     unsigned char result = 0;
 
-    if (!q || !q->reserved) // TODO: another chechs
+    if (!q || !q->reserved) // TODO: additional checks
     {
         on_illegal_operation();
         return 0;
     }
 
-    if ((q->head == q->tail) && (q->read_counter == q->write_counter))
+    if ((q->head == NULL_ADDRESS) ||
+        ((q->head == q->tail) && (q->read_counter == q->write_counter) && (q->read_counter > 0)))
     {
         on_illegal_operation();
         return 0;
@@ -243,8 +238,6 @@ unsigned char dequeue_byte(Queue *q) // Pops the next byte off the FIFO queue.
     return result;
 }
 
-
-
 //-------------------------------------------------
 void print_all(unsigned int shift, unsigned int size)
 {
@@ -259,4 +252,3 @@ void print_all(unsigned int shift, unsigned int size)
     std::cout << "\n";
 
 }
-//void print_item(unsigned int shift);
