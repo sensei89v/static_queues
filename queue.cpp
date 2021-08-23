@@ -26,15 +26,37 @@ typedef struct {
 unsigned char data[BUFFER_SIZE];
 
 //---------Handlers---------------------------------
-void on_out_of_memory()
+void default_on_out_of_memory()
 {
     std::cout << "Out of memory\n";
 }
 
-void on_illegal_operation()
+void default_on_illegal_operation()
 {
     std::cout << "Illegal operation\n";
 }
+
+queue_error_fn on_out_of_memory = default_on_out_of_memory;
+queue_error_fn on_illegal_operation = default_on_illegal_operation;
+
+int set_on_out_of_memory(queue_error_fn fn)
+{
+    if (!fn)
+        return 1;
+
+    on_out_of_memory = fn;
+    return 0;
+}
+
+int set_on_illegal_operation(queue_error_fn fn)
+{
+    if (!fn)
+        return 1;
+
+    on_illegal_operation = fn;
+    return 0;
+}
+
 //-----------------------------------------
 TConuter* get_counter()
 {

@@ -94,4 +94,4 @@ It works in interactive mode and supports following commands:
 `./tests`
 
 ### TODO, what can improve
-Add setters for exception functions
+Add more tests

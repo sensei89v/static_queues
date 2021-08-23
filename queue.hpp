@@ -14,6 +14,10 @@ void destroy_queue(Queue *q); // Destroy an earlier created byte queue.
 void enqueue_byte(Queue *q, unsigned char b); // Adds a new byte to a queue.
 unsigned char dequeue_byte(Queue *q); // Pops the next byte off the FIFO queue.
 
+typedef void (*queue_error_fn)();
+
+int set_on_out_of_memory(queue_error_fn fn);
+int set_on_illegal_operation(queue_error_fn fn);
 
 void print_all(unsigned int shift, unsigned int size);
 #endif
