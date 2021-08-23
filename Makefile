@@ -2,7 +2,7 @@
 all: queue_tester tests
 
 CC = g++
-OPTIONS = -g -O0 -Wall
+OPTIONS = -O2 -Wall
 
 queue_tester: 
 	${CC} ${OPTIONS} -o queue_tester main.cpp queue.cpp

@@ -77,6 +77,85 @@ int test_destroyed_queue(std::string& error)
     return 0;
 }
 
+int test_block_checking(std::string& error)
+{
+    clean_counters();
+    unsigned int q0_counter = 0;
+    unsigned int q0_counter_reader = 0;
+    unsigned int q1_counter = 0;
+    unsigned int q1_counter_reader = 0;
+    unsigned int q2_counter = 0;
+    unsigned int q2_counter_reader = 0;
+    Queue* q0 = create_queue();
+
+    for(unsigned int i = 0; i < 42 /* three blocks */; i++, q0_counter++)
+        enqueue_byte(q0, q0_counter);
+
+    Queue* q1 = create_queue();
+    for(unsigned int i = 0; i < 28 /* two blocks */; i++, q1_counter++)
+        enqueue_byte(q1, q1_counter);
+
+    Queue* q2 = create_queue();
+    for(unsigned int i = 0; i < 28 /* two blocks */; i++, q2_counter++)
+        enqueue_byte(q2, q2_counter);
+
+    for(unsigned int i = 0; i < 7 /* a half of block */; i++, q0_counter++)
+        enqueue_byte(q0, q0_counter);
+
+    for(unsigned int i = 0; i < 7 /* a half of block */; i++, q1_counter++)
+        enqueue_byte(q1, q1_counter);
+
+    for(unsigned int i = 0; i < 28 /* two blocks */; i++, q2_counter++)
+        enqueue_byte(q2, q2_counter);
+
+    for(unsigned int i = 0; i < 7 /* a half of block */; i++, q1_counter_reader++)
+    {
+        unsigned char c = dequeue_byte(q1);
+        TEST_ASSERT(c == q1_counter_reader, "unexpected dequeued byte");
+    }
+
+    for(unsigned int i = 0; i < 28 /* two blocks */; i++, q2_counter++)
+        enqueue_byte(q2, q2_counter);
+
+    for(unsigned int i = 0; i < 14 /* a block */; i++, q0_counter_reader++)
+    {
+        unsigned char c = dequeue_byte(q0);
+        TEST_ASSERT(c == q0_counter_reader, "unexpected dequeued byte");
+    }
+
+    // q0 = 42 + 7 - 14 = 35
+    // q1 = 28 + 7 - 7 = 28
+    // q2 = 28 + 28 + 28 = 74
+    for(unsigned int i = 0; i < 84; i++, q2_counter_reader++)
+    {
+        unsigned char c = dequeue_byte(q2);
+        TEST_ASSERT(c == q2_counter_reader, "unexpected dequeued byte");
+    }
+
+    for(unsigned int i = 0; i < 28; i++, q1_counter_reader++)
+    {
+        unsigned char c = dequeue_byte(q1);
+        TEST_ASSERT(c == q1_counter_reader, "unexpected dequeued byte");
+    }
+
+    for(unsigned int i = 0; i < 35; i++, q0_counter_reader++)
+    {
+        unsigned char c = dequeue_byte(q0);
+        TEST_ASSERT(c == q0_counter_reader, "unexpected dequeued byte");
+    }
+
+    TEST_ASSERT(on_out_of_memory_counter == 0, "unexpected on_out_of_memory_counter");
+    TEST_ASSERT(on_illegal_operation_counter == 0, "unexpected on_illegal_operation_counter");
+    dequeue_byte(q0);
+    dequeue_byte(q1);
+    dequeue_byte(q2);
+    TEST_ASSERT(on_illegal_operation_counter == 3, "unexpected on_illegal_operation_counter");
+    destroy_queue(q0);
+    destroy_queue(q1);
+    destroy_queue(q2);
+    return 0;
+}
+
 int test_empty_many_queues(std::string& error)
 {
     clean_counters();
@@ -145,7 +224,6 @@ int test_big_one_queue(std::string& error)
     return 0;
 }
 
-
 int main()
 {
     std::string error;
@@ -166,6 +244,7 @@ int main()
     teststruct testfuncs[] = {
         TEST_STRUCT(test_usual_work),
         TEST_STRUCT(test_destroyed_queue),
+        TEST_STRUCT(test_block_checking),
         TEST_STRUCT(test_empty_many_queues),
         TEST_STRUCT(test_big_one_queue)
     };
