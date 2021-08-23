@@ -6,6 +6,14 @@
 
 typedef int (*testfunc)(std::string& error);
 
+typedef struct {
+    testfunc func;
+    const char* func_name;
+} teststruct;
+
+#define TEST_STRUCT(func) {func, #func}
+
+
 int test_empty_many_queues(std::string& error)
 {
     error = "";
@@ -91,21 +99,28 @@ int main()
 {
     std::string error;
     unsigned int code;
-    testfunc testfuncs[] = {
-        test_empty_many_queues,
-        test_big_one_queue,
-        0
+
+    teststruct testfuncs[] = {
+        TEST_STRUCT(test_empty_many_queues),
+        TEST_STRUCT(test_big_one_queue)
     };
 
-    for(testfunc* test_ptr = testfuncs; *test_ptr != 0; test_ptr++)
+    for(unsigned int i = 0; i < sizeof(testfuncs) / sizeof(teststruct); i++)
     {
-        testfunc test = *test_ptr;
+        teststruct current_test_struct = testfuncs[i];
+        testfunc test = current_test_struct.func;
+
         code = test(error);
+        std::cout << current_test_struct.func_name << ": ";
 
         if (code)
         {
-            std::cout << error << "\n";
+            std::cout << "FAIL. " << error << "\n";
             return 1;
+        }
+        else
+        {
+            std::cout << "OK\n";
         }
     }
 
