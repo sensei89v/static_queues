@@ -1,25 +1,10 @@
 #include <vector>
 #include <string>
+#include <iostream>
 #include "queue.hpp"
 
 
-#define mu_assert(message, test) do { if (!(test)) return message; } while (0)
-#define mu_run_test(test) do { char *message = test(); tests_run++; \
-                               if (message) return message; } while (0)
-extern int tests_run;
-
-// int main(int argc, char **argv) {
-//     char *result = all_tests();
-//     if (result != 0) {
-//         printf("%s\n", result);
-//     }
-//     else {
-//         printf("ALL TESTS PASSED\n");
-//     }
-//     printf("Tests run: %d\n", tests_run);
-//
-//     return result != 0;
-// }
+typedef int (*testfunc)(std::string& error);
 
 int test_empty_many_queues(std::string& error)
 {
@@ -75,10 +60,55 @@ int test_empty_many_queues(std::string& error)
     return 0;
 }
 
+int test_big_one_queue(std::string& error)
+{
+    Queue* q;
+    q = create_queue();
+    unsigned char c = 0, expected_c = 0;
+
+    for (unsigned int i = 0; i < 1610; i++, c++)
+    {
+        enqueue_byte(q, c);
+    }
+    c = 0;
+
+    for (unsigned int i = 0; i < 1610; i++, expected_c++)
+    {
+        c = dequeue_byte(q);
+        if (c != expected_c)
+        {
+            error = "Unexpected dequeue byte";
+            return 1;
+        }
+    }
+
+    destroy_queue(q);
+    // TODO: add + 1
+    return 0;
+}
+
 int main()
 {
     std::string error;
     unsigned int code;
-    code = test_empty_many_queues(error);
+    testfunc testfuncs[] = {
+        test_empty_many_queues,
+        test_big_one_queue,
+        0
+    };
+
+    for(testfunc* test_ptr = testfuncs; *test_ptr != 0; test_ptr++)
+    {
+        testfunc test = *test_ptr;
+        code = test(error);
+
+        if (code)
+        {
+            std::cout << error << "\n";
+            return 1;
+        }
+    }
+
+    std::cout << "All test complited\n";
     return 0;
 }

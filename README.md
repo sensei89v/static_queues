@@ -68,7 +68,7 @@ The storage contains from following parts:
 
 |--Header: 64 * 3 bytes--|--Block counter: 4 bytes--|--Data blocks: 115 * 16 bytes--|--Free 12 bytes--|
 
-When we need a new block we just increase the counter and change pointers. 
+When we need a new block we just increase the counter and change pointers.
 When we delete a block we move the last block in storage to place of the deleting block.
 
 ### How to build
@@ -76,7 +76,7 @@ When we delete a block we move the last block in storage to place of the deletin
 
 ### How to run
 
-`./queue_tester` 
+`./queue_tester`
 
 queue_tester - is a small tool to demonstrate work with the static queue.
 It works in interactive mode and supports following commands:
@@ -92,4 +92,6 @@ It works in interactive mode and supports following commands:
 ### How to run tests
 
 `./tests`
- 
+
+### TODO, what can improve
+Add setters for exception functions
