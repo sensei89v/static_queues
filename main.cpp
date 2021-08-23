@@ -170,13 +170,6 @@ int main() {
         {
             return 0;
         }
-        else if (command == "pa")   // TODO: DELETE!!!!
-        {
-            std::string size, shift;
-            std::cin >> shift;
-            std::cin >> size;
-            print_all(std::stoi(shift), std::stoi(size));
-        }
         else
         {
             std::cout << "Unknown command\n";

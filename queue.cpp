@@ -259,18 +259,3 @@ unsigned char dequeue_byte(Queue *q) // Pops the next byte off the FIFO queue.
 
     return result;
 }
-
-//-------------------------------------------------
-void print_all(unsigned int shift, unsigned int size)
-{
-    for(unsigned int i=0; i < size; i++)
-    {
-        if (i > 0 && i % 8 == 0)
-            std::cout << "\n";
-
-        unsigned char iter = *(data + shift + i);
-        std::cout << (std::bitset<8>(iter)) << " ";
-    }
-    std::cout << "\n";
-
-}
